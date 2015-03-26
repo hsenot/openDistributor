@@ -3,8 +3,6 @@
 
     # Includes
     require_once("inc/error.inc.php");
-    require_once("inc/database.inc.php");
-    require_once("inc/security.inc.php");
 
     # Performs the query and returns XML or JSON
     try {
@@ -21,27 +19,45 @@
         $p_postcode = "";
         if (isset($_REQUEST['postcode'])){$p_postcode = $_REQUEST['postcode'];}
 
+        // Array of parameters
+        $p_arr = array('unit'=>$p_unit,'housenumber'=>$p_housenumber,'streetname'=>$p_streetname,'streettype'=>$p_streettype,'locality'=>$p_locality,'postcode'=>$p_postcode);
+
         // Build a proper web service request based on the parameters
-        $full_url = "http://tools.energyandresources.vic.gov.au/energyapi/energytest1.php?housenumber=".$p_housenumber."&unit=".$p_unit."&streetname=".$p_streetname."&streettype=".$p_streettype."&locality=".$p_locality."&postcode=".$p_postcode;
+        $full_url = "http://tools.energyandresources.vic.gov.au/energyapi/energytest1.php"."?". http_build_query($p_arr,'', '&');
 
         // Download the web service response
         $file_in_a_string = file_get_contents($full_url);
 
         // Extraction of the distributor information based on the pattern
         // <div class="msg_distributor">Your distribution business is: <strong><a href="#contacts">XXXXXXXXX</a></strong></div>
-        $distributor = substr($file_in_a_string,strpos($file_in_a_string,"contacts")+10,strpos($file_in_a_string,"</a>")-strpos($file_in_a_string,"contacts")-10);
+        if (strpos($file_in_a_string,'Error') !== false)
+        {
+            $distributor = 'ERROR';
+        }
+        else
+        {
+            $distributor = substr($file_in_a_string,strpos($file_in_a_string,"contacts")+10,strpos($file_in_a_string,"</a>")-strpos($file_in_a_string,"contacts")-10);
+        }
 
-        // Record the distributor information
-        // Opening up DB connection
-        $pgconn = pgConnection();
+        // Output preparation
+        $p_arr['distributor']=$distributor;
+        $output = json_encode($p_arr);
 
-        // Inserting the observation
-        $sql = "update vmadd_address set distributor='".$distributor."' WHERE ....;";
-        echo $sql;
+        // no-cache (important for mobile safari)
+        header('cache-control: no-cache');
 
-        // TODO: finalise data structure and SQL statement before uncommenting below
-        //$recordSet = $pgconn->prepare($sql);
-        //$recordSet->execute();
+        // json/jsonp support
+        if (isset($_REQUEST['callback'])) {
+            // Result content type
+            header('content-type: application/javascript');  
+            $output = $_REQUEST['callback'] . '(' . $output . ');';
+        } 
+        else
+        {
+            // Result content type
+            header('content-type: application/json');            
+        }
+        echo $output;
     }
     catch (Exception $e) {
         trigger_error("Caught Exception: " . $e->getMessage(), E_USER_ERROR);
