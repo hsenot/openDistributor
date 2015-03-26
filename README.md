@@ -3,7 +3,7 @@ Tools around electricity distribution
 
 
 # API
-## get
+## get.php
 
 Description: retrieves the distributor information for a given address as JSON or JSONP
 
@@ -22,7 +22,7 @@ Example:
 
 Request:
 
-```http://app.carbongis.com.au/openDistributor/get.php?housenumber=210&streetname=high&streettype=street&locality=northcote```
+http://app.carbongis.com.au/openDistributor/get.php?housenumber=210&streetname=high&streettype=street&locality=northcote
 
 Response:
 
@@ -33,7 +33,7 @@ Error:
 ```{"unit":"","housenumber":"210","streetname":"hogh","streettype":"street","locality":"northcote","postcode":"","distributor":"ERROR"}```
 
 
-##readwrite
+##readwrite.php
 
 Description: The readwrite.php script:
 - reads address records from a database, 
