@@ -81,3 +81,11 @@ The services used to reverse-engineer the DNSPs boundaries:
 ```wget "http://<SERVER>/openDistributor/readwrite.php?pfi=1234567" -o out.log``` 
 
 - TODO: a wrapper script to loop thru all PFI in a given area
+
+- create a locality/postcode combination table
+
+```CREATE TABLE locality_postcode (id serial NOT NULL,locality character varying,postcode character varying,address_count integer,distributors character varying,CONSTRAINT locality_postcode_pk PRIMARY KEY (id))```
+
+- populate it with the CSV file
+
+```copy locality_postcode (locality,postcode,address_count) from '/var/www/openDistributor/data/address_by_locality_postcode.csv' CSV DELIMITER ';'```
