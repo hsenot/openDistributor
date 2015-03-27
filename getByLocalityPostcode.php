@@ -20,6 +20,7 @@
         // Download the web service response
         $file_in_a_string = file_get_contents($full_url);
 
+        $array=array();
         // Extraction of the distributor information based on the pattern
         // <div class="msg_distributor">Your distribution business is: <strong><a href="#contacts">XXXXXXXXX</a></strong></div>
         if (strpos($file_in_a_string,'you are not in one of our serviced areas') !== false)
@@ -34,7 +35,7 @@
             {
                 foreach($node->getElementsByTagName('td') as $cell)
                 {
-                    if (in_array($cell->nodeValue,['Citipower','Powercor','SP Ausnet','Jemena','United Energy']))
+                    if (in_array($cell->nodeValue,array('Citipower','Powercor','SP Ausnet','Jemena','United Energy')))
                     {
                         $array[] = $cell->nodeValue;
                     };
