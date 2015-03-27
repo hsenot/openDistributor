@@ -93,3 +93,16 @@ The services used to reverse-engineer the DNSPs boundaries:
 - populate it with the CSV file
 
 ```copy locality_postcode (locality,postcode,address_count) from '/var/www/openDistributor/data/address_by_locality_postcode.csv' CSV DELIMITER ';'```
+
+- create a postcode/distributor table
+
+```CREATE TABLE postcode_distributor (id serial NOT NULL,postcode character varying,distributor character varying,CONSTRAINT postcode_distributor_pk PRIMARY KEY (id))```
+
+- populate it with the CSV file
+
+```COPY postcode_distributor (postcode,distributor) from '/var/www/openDistributor/postcode-distributors.csv' CSV HEADER DELIMITER ';'```
+
+- create a derived table
+
+```create table postcode_distributors as SELECT postcode,array_to_string(array_agg(distributor order by distributor ASC), ',') FROM postcode_distributor GROUP BY postcode```
+
