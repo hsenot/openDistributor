@@ -16,7 +16,7 @@
         $pgconn = pgConnection();
 
         // Retrieving details for an address PFI
-        $sql="SELECT case when bunit_id1=0 then '' else bunit_id1||'' end unit,hse_num1 housenumber,road_name streetname,road_type streettype,locality,postcode FROM vmadd WHERE pfi='".$p_pfi."' LIMIT 1";
+        $sql="SELECT case when bunit_id1=0 then '' else bunit_id1||'' end unit,hse_num1 housenumber,road_name streetname,road_type streettype,locality,postcode FROM address WHERE pfi='".$p_pfi."' LIMIT 1";
         //echo $sql;
         $recordSet = $pgconn->prepare($sql);
         $recordSet->execute();        
@@ -34,7 +34,7 @@
         $json = json_decode(file_get_contents($full_url));
 
         // Record the distributor information
-        $sql = "update vmadd_distributor set distributor='".$json->distributor."' WHERE pfi='".$p_pfi."'";
+        $sql = "update address_distributor set distributor='".$json->distributor."' WHERE pfi='".$p_pfi."'";
         $recordSet = $pgconn->prepare($sql);
         $recordSet->execute();        
 
