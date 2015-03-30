@@ -9,14 +9,14 @@
 
     # Performs the query and returns XML or JSON
     try {
-        $p_pfi = "";
+        $p_pfi = "204249226";
         if (isset($_REQUEST['pfi'])){$p_pfi = $_REQUEST['pfi'];}
 
         // Opening up DB connection
         $pgconn = pgConnection();
 
         // Retrieving details for an address PFI
-        $sql="SELECT case when bunit_id1=0 then '' else bunit_id1||coalesce(bunit_suf1,'')||'' end unit,hse_num1||coalesce(hse_suf1,'') housenumber,road_name streetname,road_type streettype,locality,postcode FROM address WHERE pfi='".$p_pfi."' LIMIT 1";
+        $sql="SELECT case when bunit_id1=0 then '' else bunit_id1||coalesce(bunit_suf1,'')||'' end unit,hse_num1||coalesce(hse_suf1,'')||(case when hse_num2=0 then '' else '-'||hse_num2||coalesce(hse_suf2,'') end) housenumber,road_name streetname,road_type streettype,locality,postcode FROM address WHERE pfi='".$p_pfi."' LIMIT 1";
         //echo $sql;
         $recordSet = $pgconn->prepare($sql);
         $recordSet->execute();        
