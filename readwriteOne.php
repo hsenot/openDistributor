@@ -16,8 +16,8 @@
         $pgconn = pgConnection();
 
         // Retrieving details for an address PFI
-        $sql="SELECT case when bunit_id1=0 then '' else bunit_id1||bunit_suf1||'' end unit,hse_num1||hse_suf1 housenumber,road_name streetname,road_type streettype,locality,postcode FROM address WHERE pfi='".$p_pfi."' LIMIT 1";
-        //echo $sql;
+        $sql="SELECT case when bunit_id1=0 then '' else bunit_id1||coalesce(bunit_suf1,'')||'' end unit,hse_num1||coalesce(hse_suf1,'') housenumber,road_name streetname,road_type streettype,locality,postcode FROM address WHERE pfi='".$p_pfi."' LIMIT 1";
+        echo $sql;
         $recordSet = $pgconn->prepare($sql);
         $recordSet->execute();        
         // Returns an associative array of parameters (name=>value)
