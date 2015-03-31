@@ -60,6 +60,24 @@
         echo $output;
     }
     catch (Exception $e) {
-        trigger_error("Caught Exception: " . $e->getMessage(), E_USER_ERROR);
+        //trigger_error("Caught Exception: " . $e->getMessage(), E_USER_ERROR);
+	$p_arr['distributor']="ERROR-".$e->getCode();
+        $output = json_encode($p_arr);
+
+        // no-cache (important for mobile safari)
+        header('cache-control: no-cache');
+
+        // json/jsonp support
+        if (isset($_REQUEST['callback'])) {
+            // Result content type
+            header('content-type: application/javascript');
+            $output = $_REQUEST['callback'] . '(' . $output . ');';
+        }
+        else
+        {
+            // Result content type
+            header('content-type: application/json');
+        }
+        echo $output;
     }
 ?>
