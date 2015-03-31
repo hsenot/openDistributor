@@ -19,7 +19,7 @@
         $pgconn = pgConnection();
 
         // Retrieving details for an address PFI
-        $sql="SELECT pfi FROM address_distributor WHERE postcode='".$p_postcode."'";
+        $sql="SELECT pfi FROM address_distributor WHERE postcode='".$p_postcode."' AND distributor=''";
         //echo $sql;
         $recordSet = $pgconn->prepare($sql);
         $recordSet->execute();        
